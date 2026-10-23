@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PQ Registration</title>
+<meta name="description" content="Web edition of the PQ-Registration grouting data viewer: import, review, chart, report and export injection and Lugeon measurements.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231976d2'/%3E%3Cpath d='M5 22l6-8 5 5 6-10 5 7' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-comment" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16M7 15l4-5 3 3 5-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 10h16M4 15h16M10 5v14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-report" viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7zM15 3v4h4M10 12h6M10 16h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 002 3h10a2 2 0 002-3l-5-9V3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 005 5L20 12l-8 8a2.1 2.1 0 01-3-3l8-8-.5-.5a4 4 0 00-2-2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7zM15 3v4h4M9.5 17v-4h1.6a1.2 1.2 0 010 2.4H9.5M14 17v-4h1.4a2 2 0 010 4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="titlebar">
+    <button id="fileBtn" class="file-btn" data-i18n="File">File</button>
+    <h1>P Q - R E G I S T R A T I O N</h1>
+    <span class="spacer"></span>
+    <select id="langSel" aria-label="Language">
+      <option value="en">English</option>
+      <option value="sv">Svenska</option>
+    </select>
+    <button id="themeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Dark / light"><svg><use href="#i-moon"/></svg></button>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" data-view="reg" class="active" data-i18n="Registration">Registration</button>
+    <button role="tab" data-view="report" data-i18n="Reporting">Reporting</button>
+    <button role="tab" data-view="tpl" data-i18n="Templates">Templates</button>
+    <button role="tab" data-view="sum" data-i18n="Summary">Summary</button>
+  </nav>
+
+  <div class="ribbon">
+    <!-- Registration -->
+    <div class="ribbon-panel" data-panel="reg">
+      <div class="group">
+        <div class="group-body">
+          <button class="rbtn" id="btnImport"><svg><use href="#i-import"/></svg><span data-i18n="XML Import">XML Import</span></button>
+          <button class="rbtn" id="btnRepair" title="Diagnose and repair XML files for the desktop program"><svg><use href="#i-wrench"/></svg><span data-i18n="XML Repair">XML Repair</span></button>
+          <button class="rbtn" id="btnDelete"><svg><use href="#i-trash"/></svg><span data-i18n="Delete Selected">Delete Selected</span></button>
+          <button class="rbtn" id="btnClear"><svg><use href="#i-trash"/></svg><span data-i18n="Clear Database">Clear Database</span></button>
+          <button class="rbtn" id="btnDemo"><svg><use href="#i-flask"/></svg><span data-i18n="Load demo data">Load demo data</span></button>
+        </div>
+        <div class="group-title" data-i18n="Database Toolset">Database Toolset</div>
+      </div>
+      <div class="group">
+        <div class="group-body">
+          <button class="rbtn" id="btnOperator"><svg><use href="#i-user"/></svg><span data-i18n="Set Operator">Set Operator</span></button>
+          <button class="rbtn" id="btnQa"><svg><use href="#i-check"/></svg><span data-i18n="QA check">QA check</span></button>
+          <button class="rbtn" id="btnComment"><svg><use href="#i-comment"/></svg><span data-i18n="Set Comment">Set Comment</span></button>
+        </div>
+        <div class="group-title" data-i18n="Measurement Series">Measurement Series</div>
+      </div>
+      <div class="group">
+        <div class="group-body channels">
+          <div class="ch-col"><b data-i18n="Injection:">Injection:</b><div id="chInjection"></div></div>
+          <div class="ch-col" id="chAdditionalWrap"><b data-i18n="Additional Channels:">Additional Channels:</b><div id="chAdditional"></div></div>
+          <div class="ch-col"><b data-i18n="Settings:">Settings:</b><div id="chSettings"></div></div>
+        </div>
+        <div class="group-title" data-i18n="Chart channels">Chart channels</div>
+      </div>
+      <div class="group">
+        <div class="group-body">
+          <button class="rbtn" id="btnXmlOriginal" title="XML the desktop PQ-Registration can import"><svg><use href="#i-upload"/></svg><span data-i18n="XML for desktop program">XML for desktop program</span></button>
+          <button class="rbtn" id="btnCsvSeries"><svg><use href="#i-chart"/></svg><span data-i18n="Graph Data">Graph Data</span></button>
+          <button class="rbtn" id="btnCsvOverview"><svg><use href="#i-table"/></svg><span data-i18n="Table Overview">Table Overview</span></button>
+        </div>
+        <div class="group-title" data-i18n="Export CSV">Export CSV</div>
+      </div>
+    </div>
+
+    <!-- Reporting -->
+    <div class="ribbon-panel" data-panel="report" hidden>
+      <div class="group">
+        <div class="group-body">
+          <button class="rbtn" id="btnReport"><svg><use href="#i-report"/></svg><span data-i18n="Generate Report">Generate Report</span></button>
+          <button class="rbtn" id="btnPdf"><svg><use href="#i-pdf"/></svg><span data-i18n="Download PDF">Download PDF</span></button>
+          <button class="rbtn" id="btnPrint"><svg><use href="#i-print"/></svg><span data-i18n="Print / Save PDF">Print / Save PDF</span></button>
+          <button class="rbtn" id="btnReportHtml"><svg><use href="#i-download"/></svg><span data-i18n="Export HTML">Export HTML</span></button>
+        </div>
+        <div class="group-title" data-i18n="Reporting">Reporting</div>
+      </div>
+      <div class="group">
+        <div class="group-body channels">
+          <div class="ch-col"><label for="selTable" data-i18n="Data table in report">Data table in report</label>
+            <select id="selTable"><option value="0" data-i18n="Off">Off</option><option value="10">10 s</option><option value="30">30 s</option><option value="60">60 s</option><option value="300">5 min</option></select></div>
+        </div>
+        <div class="group-title" data-i18n="Report options">Report options</div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="ribbon-panel" data-panel="sum" hidden>
+      <div class="group">
+        <div class="group-body">
+          <button class="rbtn" id="btnSumCsv"><svg><use href="#i-download"/></svg><span data-i18n="Export summary CSV">Export summary CSV</span></button>
+        </div>
+        <div class="group-title" data-i18n="Export CSV">Export CSV</div>
+      </div>
+    </div>
+
+    <!-- Templates -->
+    <div class="ribbon-panel" data-panel="tpl" hidden>
+      <div class="group">
+        <div class="group-body">
+          <button class="rbtn" id="btnTplNew"><svg><use href="#i-plus"/></svg><span data-i18n="New Template">New Template</span></button>
+          <button class="rbtn" id="btnTplEdit"><svg><use href="#i-edit"/></svg><span data-i18n="Edit Template">Edit Template</span></button>
+          <button class="rbtn" id="btnTplDelete"><svg><use href="#i-trash"/></svg><span data-i18n="Delete Template">Delete Template</span></button>
+        </div>
+        <div class="group-title" data-i18n="Administration Toolset">Administration Toolset</div>
+      </div>
+      <div class="group">
+        <div class="group-body">
+          <button class="rbtn" id="btnTplExportSel"><svg><use href="#i-download"/></svg><span data-i18n="Export Selected">Export Selected</span></button>
+          <button class="rbtn" id="btnTplExportAll"><svg><use href="#i-download"/></svg><span data-i18n="Export All">Export All</span></button>
+        </div>
+        <div class="group-title" data-i18n="CSV Template Export">CSV Template Export</div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- Registration view -->
+    <section id="view-reg" class="view">
+      <div class="view-head"><h2 data-i18n="Registration Data">Registration Data</h2>
+        <input id="regFilter" type="search" placeholder="Filter…" data-i18n-ph="Filter…" aria-label="Filter">
+      </div>
+      <div id="gridReg" class="grid-wrap" tabindex="0"></div>
+      <div class="chart-head">
+        <span><b data-i18n="Selected Job Site: ">Selected Job Site: </b><span id="regSite">–</span></span>
+        <span id="legend" class="legend"></span>
+        <span class="hint" data-i18n="Drag to zoom · Shift+drag to pan · Double-click to reset">Drag to zoom · Shift+drag to pan · Double-click to reset</span>
+      </div>
+      <div class="chart-box"><canvas id="chart"></canvas></div>
+    </section>
+
+    <!-- Report view -->
+    <section id="view-report" class="view" hidden>
+      <div class="view-head"><h2 data-i18n="PQ Registration Report">PQ Registration Report</h2></div>
+      <div id="reportPages" class="report-pages"></div>
+    </section>
+
+    <!-- Summary view -->
+    <section id="view-sum" class="view" hidden>
+      <div class="view-head"><h2 data-i18n="Hole / stage summary">Hole / stage summary</h2></div>
+      <div id="gridSum" class="grid-wrap tall" tabindex="0"></div>
+    </section>
+
+    <!-- Templates view -->
+    <section id="view-tpl" class="view" hidden>
+      <div class="view-head"><h2 data-i18n="Template Administration">Template Administration</h2></div>
+      <div id="gridTpl" class="grid-wrap tall" tabindex="0"></div>
+    </section>
+  </main>
+
+  <footer class="status">
+    <span id="statusLeft"></span>
+    <span class="spacer"></span>
+    <span id="statusRight"></span>
+  </footer>
+  <p class="disclaimer" data-i18n="This program is a remake and comes with no warranty whatsoever. For reporting, use the original app – this app is merely a one-time solution to fix a bug in a critical scenario.">This program is a remake and comes with no warranty whatsoever. For reporting, use the original app – this app is merely a one-time solution to fix a bug in a critical scenario.</p>
+</div>
+
+<!-- Backstage (File menu) -->
+<div id="backstage" class="backstage" hidden>
+  <aside>
+    <button id="bsClose" class="bs-back" data-i18n="← Back">← Back</button>
+    <button class="bs-item active" data-bs="info" data-i18n="Info">Info</button>
+    <button class="bs-item" data-bs="support" data-i18n="Support">Support</button>
+    <button class="bs-item" data-bs="settings" data-i18n="Settings">Settings</button>
+  </aside>
+  <div class="bs-content">
+    <section data-bs-page="info">
+      <h3 data-i18n="Information">Information</h3>
+      <p data-i18n="PQ-Registration is a data viewer for grouting injection and Lugeon test registrations: import measurement files, review and annotate them, chart pressure / flow / quantity, produce reports and export CSV.">PQ-Registration is a data viewer for grouting injection and Lugeon test registrations: import measurement files, review and annotate them, chart pressure / flow / quantity, produce reports and export CSV.</p>
+      <p class="muted" data-i18n="This is an unofficial web re-creation of the desktop application “PQ-Registration V5” by SPÄNI Elektro-Mechanik AG for Häny Mixing and Injection Technology AG (www.haeny.com). It is not affiliated with or endorsed by them.">This is an unofficial web re-creation of the desktop application “PQ-Registration V5” by SPÄNI Elektro-Mechanik AG for Häny Mixing and Injection Technology AG (www.haeny.com). It is not affiliated with or endorsed by them.</p>
+      <h3 data-i18n="Software Version">Software Version</h3>
+      <p>Web edition 1.0 <span class="muted">(modelled on desktop V5.1.4)</span></p>
+      <h3 data-i18n="Storage">Storage</h3>
+      <p id="storageInfo" class="muted"></p>
+    </section>
+    <section data-bs-page="support" hidden>
+      <h3 data-i18n="Support">Support</h3>
+      <p><b data-i18n="Original desktop application">Original desktop application</b><br>SPÄNI Elektro-Mechanik AG<br>Haldenstrasse 2<br>8852 Altendorf<br>+41 (0)55 451 55 22<br>www.elektro-spaeni.ch</p>
+    </section>
+    <section data-bs-page="settings" hidden>
+      <h3 data-i18n="Settings Registration">Settings Registration</h3>
+      <label class="set-row"><input type="checkbox" id="set2nd"> <span data-i18n="2nd Pressure Enable">2nd Pressure Enable</span></label>
+      <label class="set-row"><input type="checkbox" id="set2k"> <span data-i18n="2K Injection Enable">2K Injection Enable</span></label>
+      <h3 data-i18n="Settings Dates">Settings Dates</h3>
+      <label class="set-row"><span class="lbl" data-i18n="Date format (screen & report)">Date format (screen &amp; report)</span>
+        <select id="setDate"><option value="dot">dd.MM.yyyy</option><option value="iso">yyyy-MM-dd (ISO)</option></select></label>
+      <p class="muted" data-i18n="Imports accept dd.MM.yyyy and yyyy-MM-dd. CSV exports always use ISO (yyyy-MM-dd HH:mm:ss) so they open correctly in every country.">Imports accept dd.MM.yyyy and yyyy-MM-dd. CSV exports always use ISO (yyyy-MM-dd HH:mm:ss) so they open correctly in every country.</p>
+      <label class="set-row"><span class="lbl" data-i18n="Dates in CSV exports">Dates in CSV exports</span>
+        <select id="setExportDates"><option value="iso" data-i18n="ISO (safe in every country)">ISO (safe in every country)</option><option value="screen" data-i18n="Same as on screen">Same as on screen</option></select></label>
+      <h3 data-i18n="Backup">Backup</h3>
+      <div class="set-row"><button id="btnBackup" class="btn" data-i18n="Download backup">Download backup</button> <button id="btnRestore" class="btn" data-i18n="Restore backup">Restore backup</button></div>
+      <h3 data-i18n="Settings Reporting">Settings Reporting</h3>
+      <div class="set-row"><span data-i18n="Load Customer Logo">Load Customer Logo</span> <button id="btnLogo" class="btn" data-i18n="Load">Load</button> <img id="logoPreview" alt="" hidden></div>
+      <label class="set-row"><input type="checkbox" id="setLogo"> <span data-i18n="Enable Customer Logo">Enable Customer Logo</span></label>
+      <h3 data-i18n="Settings Jobsite Templates">Settings Jobsite Templates</h3>
+      <label class="set-row"><span class="lbl" data-i18n="Customer Group 1 Name">Customer Group 1 Name</span> <input type="text" id="setG1" maxlength="30"></label>
+      <label class="set-row"><span class="lbl" data-i18n="Customer Group 2 Name">Customer Group 2 Name</span> <input type="text" id="setG2" maxlength="30"></label>
+      <label class="set-row"><span class="lbl" data-i18n="Customer Group 3 Name">Customer Group 3 Name</span> <input type="text" id="setG3" maxlength="30"></label>
+    </section>
+  </div>
+</div>
+
+<!-- Simple text input dialog (operator / comment) -->
+<dialog id="dlgInput">
+  <form method="dialog" id="formInput">
+    <h3 id="dlgInputTitle"></h3>
+    <textarea id="dlgInputText" rows="3" maxlength="500"></textarea>
+    <div class="dlg-actions">
+      <button type="button" class="btn" id="dlgInputCancel" data-i18n="Cancel">Cancel</button>
+      <button type="submit" class="btn primary" data-i18n="Save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Confirm dialog -->
+<dialog id="dlgConfirm">
+  <form method="dialog">
+    <h3 id="dlgConfirmTitle"></h3>
+    <p id="dlgConfirmMsg"></p>
+    <div class="dlg-actions">
+      <button type="button" class="btn" id="dlgConfirmNo" data-i18n="No">No</button>
+      <button type="button" class="btn primary" id="dlgConfirmYes" data-i18n="Yes">Yes</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Template editor -->
+<dialog id="dlgTemplate" class="wide">
+  <form method="dialog" id="formTemplate" novalidate>
+    <h3 id="dlgTemplateTitle"></h3>
+    <div id="tplFields" class="tpl-fields"></div>
+    <p id="tplHint" class="hint err" hidden></p>
+    <div class="dlg-actions">
+      <button type="button" class="btn" id="tplCancel" data-i18n="Close">Close</button>
+      <button type="submit" class="btn primary" data-i18n="Save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- XML repair -->
+<dialog id="dlgRepair" class="xl">
+  <form method="dialog">
+    <h3 data-i18n="XML Repair">XML Repair</h3>
+    <p class="muted" data-i18n="Checks XML files against what the desktop PQ-Registration can import (it only accepts dates as dd.MM.yyyy) and repairs them. Files never leave your computer.">Checks XML files against what the desktop PQ-Registration can import (it only accepts dates as dd.MM.yyyy) and repairs them. Files never leave your computer.</p>
+    <div class="row"><button type="button" class="btn" id="repairPick" data-i18n="Choose XML files…">Choose XML files…</button>
+      <label class="inline"><span data-i18n="Target">Target</span> <select id="repairTarget"><option value="original" data-i18n="Desktop program (dd.MM.yyyy)">Desktop program (dd.MM.yyyy)</option><option value="iso" data-i18n="ISO (yyyy-MM-dd)">ISO (yyyy-MM-dd)</option></select></label></div>
+    <div id="repairList" class="repair-list"></div>
+    <div class="dlg-actions">
+      <button type="button" class="btn" id="repairClose" data-i18n="Close">Close</button>
+      <button type="button" class="btn" id="repairImport" data-i18n="Import into web app" disabled>Import into web app</button>
+      <button type="button" class="btn" id="repairZip" data-i18n="Download all (ZIP)" disabled>Download all (ZIP)</button>
+      <button type="button" class="btn primary" id="repairDownload" data-i18n="Download repaired" disabled>Download repaired</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- QA -->
+<dialog id="dlgQa" class="xl">
+  <form method="dialog">
+    <h3 data-i18n="QA check">QA check</h3>
+    <div id="qaList" class="repair-list"></div>
+    <div class="dlg-actions"><button type="submit" class="btn primary" data-i18n="Close">Close</button></div>
+  </form>
+</dialog>
+
+<!-- Password gate -->
+<div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" hidden>
+  <form id="gateForm" class="gate-box" autocomplete="off">
+    <h2 id="gateTitle">P Q - R E G I S T R A T I O N</h2>
+    <p data-i18n="Enter the password to use this app.">Enter the password to use this app.</p>
+    <input type="password" id="gatePw" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Password" required>
+    <button type="submit" class="btn primary" data-i18n="Unlock">Unlock</button>
+    <p id="gateErr" class="hint err" hidden data-i18n="Wrong password">Wrong password</p>
+    <p class="disclaimer" data-i18n="This program is a remake and comes with no warranty whatsoever. For reporting, use the original app – this app is merely a one-time solution to fix a bug in a critical scenario.">This program is a remake and comes with no warranty whatsoever. For reporting, use the original app – this app is merely a one-time solution to fix a bug in a critical scenario.</p>
+  </form>
+</div>
+
+<div id="busy" class="busy" hidden><div class="spinner"></div><span data-i18n="Importing…">Importing…</span></div>
+<div id="toasts" class="toasts" aria-live="polite"></div>
+<div id="dropHint" class="drop-hint" hidden data-i18n="Drop XML file to import">Drop XML file to import</div>
+<input type="file" id="fileXml" accept=".xml,text/xml,application/xml" multiple hidden>
+<input type="file" id="fileRepair" accept=".xml,text/xml,application/xml" multiple hidden>
+<input type="file" id="fileBackup" accept=".json,application/json" hidden>
+<input type="file" id="fileLogo" accept="image/*" hidden>
+
+<script src="js/i18n.js"></script>
+<script src="js/gate.js"></script>
+<script src="js/db.js"></script>
+<script src="js/data.js"></script>
+<script src="js/xmlfix.js"></script>
+<script src="js/sample.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/report.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

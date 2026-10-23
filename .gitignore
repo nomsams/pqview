@@ -1,0 +1,5 @@
+# real project data and local files - never publish
+output/
+sample/PQ-Report*
+.claude/
+NOTES.md
