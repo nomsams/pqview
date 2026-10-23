@@ -10,7 +10,7 @@
   PQ.REPORT_CSS = `
 .rp-pages{--text:#1c2430;--muted:#5d6878;--border:#c4ccd9;--grid:#e1e6ee;--panel:#ffffff;--accent:#1976d2;
   color:#1c2430;font:12px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  -webkit-print-color-adjust:exact;print-color-adjust:exact;color-scheme:light}
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
 .rp-pages *{box-sizing:border-box}
 .rp-page{position:relative;width:210mm;height:297mm;margin:0 auto 14px;padding:12mm 14mm 16mm;background:#fff;overflow:hidden;
   box-shadow:0 2px 12px rgba(20,30,50,.25);page-break-after:always;break-after:page}

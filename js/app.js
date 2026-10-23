@@ -32,12 +32,18 @@
   const activeChannels = () => PQ.SERIES.map((s) => s.key).filter(channelOn);
 
   /* ---------- toast / busy / dialogs ---------- */
-  function toast(msg, isErr) {
+  function toast(msg, isErr, action) {
     const el = document.createElement('div');
     el.className = 'toast' + (isErr ? ' err' : '');
     el.textContent = msg;
+    if (action) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'toast-btn'; b.textContent = action.label;
+      b.onclick = () => { el.remove(); action.fn(); };
+      el.appendChild(b);
+    }
     $('#toasts').appendChild(el);
-    setTimeout(() => el.remove(), isErr ? 9000 : 4500);
+    setTimeout(() => el.remove(), action ? 15000 : isErr ? 9000 : 4500);
   }
   const busy = (on, msg) => { $('#busy span').textContent = msg || t('Importing…'); $('#busy').hidden = !on; };
 
@@ -320,10 +326,13 @@
 
   async function importFiles(files) {
     busy(true); await tick();
-    const total = { measurements: 0, values: 0 }, warns = [];
+    const total = { measurements: 0, values: 0 }, warns = [], needsRepair = [];
     for (const f of files) {
       try {
-        const r = PQ.importXML(await f.text());
+        const text = await f.text();
+        const r = PQ.importXML(text);
+        db.saveSource(f.name, text);
+        if (PQ.analyzeXml(text).blocking) needsRepair.push(f.name);
         total.measurements += r.measurements; total.values += r.values;
         r.warnings.forEach((w) => warns.push(`${f.name}: ${w}`));
         if (r.skipped) warns.push(`${f.name}: ${r.skipped} ${t('records without header were skipped')}`);
@@ -337,6 +346,7 @@
     if (total.measurements) toast(`${t('Imported')}: ${total.measurements} ${t('registrations')}, ${total.values} ${t('readings')}`);
     else if (!warns.length) toast(t('Import cancelled!'), true);
     warns.slice(0, 3).forEach((w) => toast('⚠ ' + w, true));
+    if (needsRepair.length) toast(t('PQ-Registration V5 cannot import this file as it is.'), true, { label: t('Repair now'), fn: openRepair });
   }
 
   $('#btnDemo').onclick = async () => {
@@ -561,7 +571,7 @@
   $('#btnTplExportSel').onclick = () => PQ.download(`ExportTemplates_${PQ.stamp()}.csv`, PQ.csvTemplates(tplGrid.selected()));
   $('#btnTplExportAll').onclick = () => PQ.download(`ExportTemplates_${PQ.stamp()}.csv`, PQ.csvTemplates(db.data.vorlagen));
 
-  /* ---------- XML for the desktop program ---------- */
+  /* ---------- XML for PQ-Registration V5 ---------- */
   $('#btnXmlOriginal').onclick = () => {
     const sel = regGrid.selected();
     if (!sel.length) return;
@@ -569,28 +579,28 @@
     const check = PQ.analyzeXml(xml);
     if (check.blocking) return toast(t('Generated XML failed its own check – please report this.'), true);
     PQ.download(`PQ-Registration_${PQ.stamp()}.xml`, xml, 'application/xml', false);
-    toast(`${sel.length} ${t('registrations')} → ${t('XML for the desktop program. Import it there with XML Import.')}`);
+    toast(`${sel.length} ${t('registrations')} → ${t('XML for PQ-Registration V5. Import it there with XML Import.')}`);
   };
 
   /* ---------- XML repair ---------- */
   const ISSUE_TEXT = {
     noRecords: 'No header / data / footer records found.',
-    xmlDecl: 'Contains an XML declaration (<?xml …?>) – the desktop program cannot read it.',
-    spaeniRoot: 'Wrapped in a <Spaeni> root element – the desktop program adds its own.',
+    xmlDecl: 'Contains an XML declaration (<?xml …?>) – PQ-Registration V5 cannot read it.',
+    spaeniRoot: 'Wrapped in a <Spaeni> root element – PQ-Registration V5 adds its own.',
     strayText: 'Unexpected text outside the records.',
     headerWithoutFooter: 'A new header starts before the previous run was closed.',
     orphanData: 'Data record without a header.',
     orphanFooter: 'Footer without a header.',
     unclosedRun: 'File ends without a footer for this run.',
-    isoDates: 'Dates are written as yyyy-MM-dd. The desktop program only accepts dd.MM.yyyy and aborts with “Import Exception”.',
+    isoDates: 'Dates are written as yyyy-MM-dd. PQ-Registration V5 only accepts dd.MM.yyyy and aborts with “Import Exception”.',
     mixedDates: 'Dates use mixed formats.',
     badDates: 'Dates that are not real calendar dates.',
-    nonInteger: 'Decimal value where the desktop program needs a whole number (CH, SAMP, MODE, DURA).',
-    missingAttr: 'Missing attribute the desktop program requires:',
+    nonInteger: 'Decimal value where PQ-Registration V5 needs a whole number (CH, SAMP, MODE, DURA).',
+    missingAttr: 'Missing attribute PQ-Registration V5 requires:',
     volumeDrops: 'Quantity decreases during the run.',
     negativePressure: 'Pressure below −1 bar.',
     durationMismatch: 'Footer duration differs from readings × sample interval.',
-    extraAttrs: 'Extra attributes from newer firmware (ignored by the desktop program, kept):',
+    extraAttrs: 'Extra attributes from newer firmware (ignored by PQ-Registration V5, kept):',
     noReadings: 'No readings.',
     unfinished: 'Run has no end (no footer).',
     zeroTake: 'Zero take – no material injected.',
@@ -604,16 +614,17 @@
     const list = $('#repairList');
     const target = $('#repairTarget').value;
     if (!repairFiles.length) { list.innerHTML = `<div class="empty">${esc(t('Choose or drop one or more XML files.'))}</div>`; }
-    else list.innerHTML = repairFiles.map((f) => {
+    else list.innerHTML = repairFiles.map((f, idx) => {
       const a = f.analysis;
-      const verdict = a.blocking ? `<span class="badge error">${esc(t('Needs repair'))}</span>` : `<span class="badge ok">${esc(t('OK for desktop program'))}</span>`;
+      const verdict = a.blocking ? `<span class="badge error">${esc(t('Needs repair'))}</span>` : `<span class="badge ok">${esc(t('OK for PQ-Registration V5'))}</span>`;
       const dev = a.meta.sn || a.meta.ver ? ` · ${esc([a.meta.sn, a.meta.ver && 'VER ' + a.meta.ver].filter(Boolean).join(' / '))}` : '';
-      return `<div class="rcard"><div class="rhead"><span class="rname">${esc(f.name)}</span>${verdict}<span class="muted">${a.runs} ${esc(t('runs'))} · ${a.rows} ${esc(t('readings'))}${dev}</span></div>` +
+      return `<div class="rcard"><div class="rhead"><span class="rname">${esc(f.name)}</span>${verdict}${f.fromImport ? `<span class="badge info">${esc(t('Imported earlier'))}</span>` : ''}<button type="button" class="rm" data-rm="${idx}" title="${esc(t('Remove from list'))}" aria-label="${esc(t('Remove from list'))}">×</button><span class="muted">${a.runs} ${esc(t('runs'))} · ${a.rows} ${esc(t('readings'))}${dev}</span></div>` +
         (a.issues.length ? `<ul>${a.issues.map(issueLi).join('')}</ul>` : '') +
         (a.blocking && target === 'original' ? `<div class="muted" style="margin-top:4px">${esc(t('The repaired file keeps all values; only the listed problems are changed.'))}</div>` : '') + '</div>';
     }).join('');
     const any = repairFiles.length > 0;
-    ['repairDownload', 'repairZip', 'repairImport'].forEach((id) => { $('#' + id).disabled = !any; });
+    ['repairDownload', 'repairZip'].forEach((id) => { $('#' + id).disabled = !any; });
+    $('#repairImport').disabled = !repairFiles.some((f) => !f.fromImport);
   }
   async function addRepairFiles(files) {
     for (const f of files) {
@@ -629,14 +640,26 @@
     const r = PQ.repairXml(f.text, target);
     return { name: f.name.replace(/\.xml$/i, '') + (target === 'original' ? '_original-format' : '_KLAR') + '.xml', text: r.text };
   };
-  $('#btnRepair').onclick = () => { repairFiles = []; renderRepair(); $('#dlgRepair').showModal(); };
+  /* Opens the dialog with every file imported earlier already loaded - no need to upload again. */
+  function openRepair() {
+    repairFiles = db.listSources().map((src) => ({ name: src.name, text: src.text, analysis: PQ.analyzeXml(src.text), fromImport: true }));
+    renderRepair();
+    $('#dlgRepair').showModal();
+  }
+  $('#btnRepair').onclick = openRepair;
+  $('#repairList').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-rm]');
+    if (!b) return;
+    repairFiles.splice(+b.dataset.rm, 1);
+    renderRepair();
+  });
   $('#repairClose').onclick = () => $('#dlgRepair').close();
   $('#repairPick').onclick = () => $('#fileRepair').click();
   $('#repairTarget').onchange = renderRepair;
   $('#fileRepair').addEventListener('change', async (e) => { const fs = [...e.target.files]; e.target.value = ''; await addRepairFiles(fs); });
   $('#repairDownload').onclick = () => {
     repairFiles.forEach((f) => { const r = repaired(f); PQ.download(r.name, r.text, 'application/xml', false); });
-    toast(t('Repaired file(s) downloaded. Import them in the desktop program with XML Import.'));
+    toast(t('Repaired file(s) downloaded. Import them in PQ-Registration V5 with XML Import.'));
   };
   $('#repairZip').onclick = () => {
     PQ.downloadBlob(`PQ-repaired_${PQ.stamp()}.zip`, new Blob([PQ.zip(repairFiles.map((f) => { const r = repaired(f); return { name: r.name, data: r.text }; }))], { type: 'application/zip' }));
@@ -645,7 +668,7 @@
     $('#dlgRepair').close();
     busy(true); await tick();
     let n = 0;
-    for (const f of repairFiles) { try { n += PQ.importXML(f.text).measurements; } catch (e) { toast(`${f.name}: ${e.message}`, true); } }
+    for (const f of repairFiles.filter((x) => !x.fromImport)) { try { n += PQ.importXML(f.text).measurements; db.saveSource(f.name, f.text); } catch (e) { toast(`${f.name}: ${e.message}`, true); } }
     busy(false); refreshReg(); toast(`${t('Imported')}: ${n} ${t('registrations')}`);
   };
 

@@ -55,7 +55,8 @@
       <div class="group">
         <div class="group-body">
           <button class="rbtn" id="btnImport"><svg><use href="#i-import"/></svg><span data-i18n="XML Import">XML Import</span></button>
-          <button class="rbtn" id="btnRepair" title="Diagnose and repair XML files for the desktop program"><svg><use href="#i-wrench"/></svg><span data-i18n="XML Repair">XML Repair</span></button>
+          <button class="rbtn" id="btnXmlOriginal" title="Export the selected registrations as XML that PQ-Registration V5 can import"><svg><use href="#i-upload"/></svg><span data-i18n="XML for PQ-Registration V5">XML for PQ-Registration V5</span></button>
+          <button class="rbtn" id="btnRepair" title="Diagnose and repair XML files for PQ-Registration V5"><svg><use href="#i-wrench"/></svg><span data-i18n="XML Repair">XML Repair</span></button>
           <button class="rbtn" id="btnDelete"><svg><use href="#i-trash"/></svg><span data-i18n="Delete Selected">Delete Selected</span></button>
           <button class="rbtn" id="btnClear"><svg><use href="#i-trash"/></svg><span data-i18n="Clear Database">Clear Database</span></button>
           <button class="rbtn" id="btnDemo"><svg><use href="#i-flask"/></svg><span data-i18n="Load demo data">Load demo data</span></button>
@@ -80,7 +81,6 @@
       </div>
       <div class="group">
         <div class="group-body">
-          <button class="rbtn" id="btnXmlOriginal" title="XML the desktop PQ-Registration can import"><svg><use href="#i-upload"/></svg><span data-i18n="XML for desktop program">XML for desktop program</span></button>
           <button class="rbtn" id="btnCsvSeries"><svg><use href="#i-chart"/></svg><span data-i18n="Graph Data">Graph Data</span></button>
           <button class="rbtn" id="btnCsvOverview"><svg><use href="#i-table"/></svg><span data-i18n="Table Overview">Table Overview</span></button>
         </div>
@@ -185,7 +185,6 @@
   <aside>
     <button id="bsClose" class="bs-back" data-i18n="← Back">← Back</button>
     <button class="bs-item active" data-bs="info" data-i18n="Info">Info</button>
-    <button class="bs-item" data-bs="support" data-i18n="Support">Support</button>
     <button class="bs-item" data-bs="settings" data-i18n="Settings">Settings</button>
   </aside>
   <div class="bs-content">
@@ -197,10 +196,6 @@
       <p>Web edition 1.0 <span class="muted">(modelled on desktop V5.1.4)</span></p>
       <h3 data-i18n="Storage">Storage</h3>
       <p id="storageInfo" class="muted"></p>
-    </section>
-    <section data-bs-page="support" hidden>
-      <h3 data-i18n="Support">Support</h3>
-      <p><b data-i18n="Original desktop application">Original desktop application</b><br>SPÄNI Elektro-Mechanik AG<br>Haldenstrasse 2<br>8852 Altendorf<br>+41 (0)55 451 55 22<br>www.elektro-spaeni.ch</p>
     </section>
     <section data-bs-page="settings" hidden>
       <h3 data-i18n="Settings Registration">Settings Registration</h3>
@@ -268,7 +263,7 @@
     <h3 data-i18n="XML Repair">XML Repair</h3>
     <p class="muted" data-i18n="Checks XML files against what the desktop PQ-Registration can import (it only accepts dates as dd.MM.yyyy) and repairs them. Files never leave your computer.">Checks XML files against what the desktop PQ-Registration can import (it only accepts dates as dd.MM.yyyy) and repairs them. Files never leave your computer.</p>
     <div class="row"><button type="button" class="btn" id="repairPick" data-i18n="Choose XML files…">Choose XML files…</button>
-      <label class="inline"><span data-i18n="Target">Target</span> <select id="repairTarget"><option value="original" data-i18n="Desktop program (dd.MM.yyyy)">Desktop program (dd.MM.yyyy)</option><option value="iso" data-i18n="ISO (yyyy-MM-dd)">ISO (yyyy-MM-dd)</option></select></label></div>
+      <label class="inline"><span data-i18n="Target">Target</span> <select id="repairTarget"><option value="original" data-i18n="PQ-Registration V5 (dd.MM.yyyy)">PQ-Registration V5 (dd.MM.yyyy)</option><option value="iso" data-i18n="ISO (yyyy-MM-dd)">ISO (yyyy-MM-dd)</option></select></label></div>
     <div id="repairList" class="repair-list"></div>
     <div class="dlg-actions">
       <button type="button" class="btn" id="repairClose" data-i18n="Close">Close</button>

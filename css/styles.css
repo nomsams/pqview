@@ -13,18 +13,28 @@
   --head: #1976d2;
   --danger: #c62828;
   --shadow: 0 2px 10px rgba(20, 30, 50, .12);
+  --scroll-thumb: #b2bccd;
+  --scroll-track: #eef1f6;
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #12161d; --panel: #1b212b; --text: #e6eaf1; --muted: #93a0b4; --border: #333d4d; --grid: #2a3340;
     --accent: #4d9bf0; --accent-soft: #1d3a5c; --row-sel: #24456b; --row-alt: #1f2631; --head: #2563a8; --danger: #ef7676;
     --shadow: 0 2px 10px rgba(0, 0, 0, .5);
+    --scroll-thumb: #4a5670;
+    --scroll-track: #141922;
+    color-scheme: dark;
   }
 }
+:root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] {
   --bg: #12161d; --panel: #1b212b; --text: #e6eaf1; --muted: #93a0b4; --border: #333d4d; --grid: #2a3340;
   --accent: #4d9bf0; --accent-soft: #1d3a5c; --row-sel: #24456b; --row-alt: #1f2631; --head: #2563a8; --danger: #ef7676;
   --shadow: 0 2px 10px rgba(0, 0, 0, .5);
+  --scroll-thumb: #4a5670;
+  --scroll-track: #141922;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -200,3 +210,17 @@ body.locked > :not(#gate):not(script):not(svg) { filter: blur(12px); pointer-eve
 @media print { .disclaimer, .gate { display: none !important; } }
 
 body.locked { overflow: hidden; }
+
+.toast-btn { margin-left: 12px; padding: 3px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,.7); background: rgba(255,255,255,.18); color: #fff; cursor: pointer; font-weight: 600; }
+.toast-btn:hover { background: rgba(255,255,255,.32); }
+.rcard .rhead .rm { margin-left: auto; border: 0; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; cursor: pointer; padding: 0 4px; }
+.rcard .rhead .rm:hover { color: var(--danger); }
+
+/* ---------- scrollbars follow the theme ---------- */
+* { scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+@supports not (scrollbar-color: auto) {
+  *::-webkit-scrollbar { width: 12px; height: 12px; }
+  *::-webkit-scrollbar-track { background: var(--scroll-track); }
+  *::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 6px; border: 2px solid var(--scroll-track); }
+  *::-webkit-scrollbar-corner { background: var(--scroll-track); }
+}

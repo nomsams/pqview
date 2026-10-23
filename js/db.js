@@ -34,6 +34,7 @@
   const settings = Object.assign({}, DEFAULT_SETTINGS);
   const byMessung = new Map();
   let logo = null;
+  const sources = new Map(); // raw text of imported XML files (kept so they can be repaired later)
   let idb = null;
   let queue = [];
   let flushTimer = null;
@@ -110,6 +111,7 @@
           if (row.key === 'seq') Object.assign(seq, row.value);
           if (row.key === 'settings') Object.assign(settings, row.value);
           if (row.key === 'logo') logo = row.value;
+          if (row.key.startsWith('src:')) sources.set(row.value.name, row.value);
         }
       } catch (e) {
         console.warn('Running without persistence:', e);
@@ -166,6 +168,7 @@
         enqueue({ s, t: 'clear' });
       }
       byMessung.clear();
+      [...sources.keys()].forEach((n) => this.removeSource(n));
     },
 
     values(messungId) {
@@ -181,6 +184,21 @@
     },
     flag(name) {
       return settings[name] === '1';
+    },
+
+    /* Imported XML files: newest first, at most 10 are kept. */
+    saveSource(name, text) {
+      sources.set(name, { name, text, time: Date.now() });
+      enqueue({ s: 'kv', t: 'put', v: { key: 'src:' + name, value: sources.get(name) } });
+      const old = [...sources.values()].sort((a, b) => b.time - a.time).slice(10);
+      old.forEach((o) => this.removeSource(o.name));
+    },
+    listSources() {
+      return [...sources.values()].sort((a, b) => b.time - a.time);
+    },
+    removeSource(name) {
+      sources.delete(name);
+      enqueue({ s: 'kv', t: 'del', v: 'src:' + name });
     },
 
     getLogo() {
